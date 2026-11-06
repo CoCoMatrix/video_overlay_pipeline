@@ -1,0 +1,80 @@
+{
+  "version": "region-rules-v1-shadow",
+  "regions": {
+    "bottom": [
+      0,
+      0.72,
+      1,
+      1
+    ],
+    "left": [
+      0,
+      0,
+      0.15,
+      1
+    ],
+    "right": [
+      0.85,
+      0,
+      1,
+      1
+    ],
+    "top_left": [
+      0,
+      0,
+      0.25,
+      0.2
+    ],
+    "top_right": [
+      0.75,
+      0,
+      1,
+      0.2
+    ],
+    "bottom_left": [
+      0,
+      0.8,
+      0.25,
+      1
+    ],
+    "bottom_right": [
+      0.75,
+      0.8,
+      1,
+      1
+    ]
+  },
+  "min_score": 0.65,
+  "box_fraction_in_roi": 0.6,
+  "tracking": {
+    "max_gap_s": 0.35,
+    "min_iou": 0.3,
+    "max_center_distance": 0.025,
+    "min_width_ratio": 0.4,
+    "max_width_ratio": 2.5
+  },
+  "bottom_text": {
+    "min_width": 0.18,
+    "max_height": 0.12,
+    "min_pixel_aspect": 3,
+    "max_angle_deg": 15,
+    "min_frames": 3,
+    "min_span_s": 0.5,
+    "min_clip_frame_fraction": 0.2
+  },
+  "anchor_text": {
+    "max_width": 0.25,
+    "max_height": 0.14,
+    "min_clip_frame_fraction": 0.7,
+    "min_span_s": 1,
+    "max_center_std": 0.015
+  },
+  "policy": {
+    "mode": "shadow",
+    "change_v4_routes": false,
+    "no_detection_means_absence": false,
+    "semantic_overlay_confirmation": false,
+    "graphic_logo_without_text": "not_covered",
+    "occlusion_decision": "requires action/contact region and semantic confirmation"
+  }
+}

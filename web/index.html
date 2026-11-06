@@ -1,0 +1,52 @@
+<!doctype html>
+<html lang="zh-CN"><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>CoCo · 视频叠加质量检查</title>
+<style>
+:root{--ink:#18342d;--muted:#64756e;--line:#d7e2dc;--paper:#f3f6f2;--accent:#087a65}
+*{box-sizing:border-box}body{margin:0;background:var(--paper);color:var(--ink);font:15px system-ui,sans-serif}
+main{max-width:1460px;margin:auto;padding:38px 28px}h1{font-size:38px;margin:12px 0}h2{font-size:22px}
+.small,small{color:var(--muted)}header{border-bottom:1px solid var(--line);padding-bottom:25px}.eyebrow{color:var(--accent);font-size:12px;letter-spacing:2px}
+#counts{display:flex;flex-wrap:wrap;gap:12px;margin:24px 0}.stat{background:white;border:1px solid var(--line);border-radius:12px;padding:18px;min-width:155px}.stat b{font-size:30px;display:block}
+.toolbar{display:flex;flex-wrap:wrap;gap:10px;margin:20px 0}input,select,button{font:inherit;padding:10px;border:1px solid var(--line);border-radius:7px;background:white;color:var(--ink)}input{min-width:280px}button{cursor:pointer}button:hover{border-color:var(--accent)}a{color:var(--accent)}
+#grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(260px,1fr));gap:16px}.card{padding:0;text-align:left;overflow:hidden;border-radius:12px}.card img{width:100%;aspect-ratio:16/9;object-fit:cover;background:#dce5df}.body{padding:16px}.tag{font-size:12px;display:inline-block;padding:4px 8px;border-radius:4px;background:#e6efe9;margin:7px 0}.review,.reject{background:#fff0d5}.body p{font-size:13px;color:var(--muted)}
+dialog{border:1px solid var(--line);border-radius:14px;width:min(1250px,95vw);max-height:94vh;padding:22px;background:var(--paper)}dialog::backdrop{background:#10261dd0}.detail{display:grid;grid-template-columns:1.2fr 1fr;gap:24px}video{width:100%;max-height:65vh;background:#111;border-radius:9px}pre{white-space:pre-wrap;word-break:break-word;font-size:12px;background:white;padding:14px;border-radius:8px}.evidence{max-width:100%;border-radius:6px}.close{float:right}.panel{background:white;border:1px solid var(--line);padding:16px;border-radius:9px;margin:12px 0}.pager{display:flex;gap:12px;align-items:center;margin:22px 0}@media(max-width:760px){.detail{grid-template-columns:1fr}h1{font-size:28px}main{padding:22px 15px}}
+</style>
+<main><header><div class="eyebrow">COCO / VIDEO OVERLAY PIPELINE</div><h1>字幕、Logo 与操作可见性</h1>
+<p>固定秒数切片 → OCR 定位 → 底部与边角规则 → 来源核查 → 2 / 8 FPS 双遍判断</p>
+<p class="small">路由是模型建议。位置命中不等于字幕；有叠加不等于遮挡。没有独立人工真值时不展示准确率，不自动剔除数据。</p>
+<a href="pipeline_data.csv">下载数据表 CSV</a> · <a href="summary.json">汇总 JSON</a> · <a href="resources.json">耗时与资源</a></header>
+<section id="counts"></section><div class="toolbar">
+<input id="search" placeholder="搜索片段、来源、类型或原因" aria-label="搜索">
+<select id="route" aria-label="路由"><option value="">全部路由</option></select>
+<select id="source" aria-label="来源"><option value="">全部来源</option></select>
+<select id="type" aria-label="叠加类型"><option value="">全部类型</option></select>
+<select id="issue" aria-label="复核原因"><option value="">全部原因</option></select></div>
+<p id="status"></p><div id="grid"></div><div class="pager"><button id="prev">上一页</button><span id="page"></span><button id="next">下一页</button></div>
+<dialog id="dialog"><button class="close" id="close">关闭</button><h2 id="title"></h2><div class="detail"><section><video id="video" controls preload="metadata"></video><div id="meta"></div><div id="origins"></div></section><section id="evidence"></section></div></dialog></main>
+<script>
+'use strict';
+const $=s=>document.querySelector(s), labels={accept:'未遮挡操作',not_applicable:'不适用',review:'需复核',reject:'遮挡候选'};
+const el=(tag,text,cls)=>{const e=document.createElement(tag);if(text!==undefined)e.textContent=text;if(cls)e.className=cls;return e};
+let rows=[],page=0,filtered=[];const size=24;
+function select(id,values){for(const value of values){const option=el('option',labels[value]||value);option.value=value;$(id).append(option)}}
+function draw(){
+const query=$('#search').value.toLowerCase();filtered=rows.filter(r=>(!$('#route').value||r.overlay_route===$('#route').value)&&(!$('#source').value||r.source_id===$('#source').value)&&(!$('#type').value||r.overlay_types.includes($('#type').value))&&(!$('#issue').value||r.routing_reason===$('#issue').value)&&JSON.stringify([r.clip_id,r.source_id,r.overlay_types,r.routing_reason]).toLowerCase().includes(query));
+page=Math.max(0,Math.min(page,Math.ceil(filtered.length/size)-1));$('#grid').replaceChildren();
+for(const r of filtered.slice(page*size,(page+1)*size)){const card=el('button',undefined,'card');const im=el('img');im.src=r.thumbnail;im.alt=r.clip_id;im.loading='lazy';const body=el('div',undefined,'body');body.append(el('strong',r.clip_id),el('br'),el('span',labels[r.overlay_route], 'tag '+r.overlay_route),el('p',r.source_id+' · '+r.start_s.toFixed(1)+'–'+r.end_s.toFixed(1)+' s'),el('p',r.overlay_types.join(' / ')||'未确认叠加'),el('p',r.routing_reason));card.append(im,body);card.onclick=()=>openRecord(r);$('#grid').append(card)}
+$('#status').textContent=filtered.length+' / '+rows.length+' 条记录';$('#page').textContent=(page+1)+' / '+Math.max(1,Math.ceil(filtered.length/size));$('#prev').disabled=page===0;$('#next').disabled=(page+1)*size>=filtered.length;
+}
+function openRecord(r){
+$('#title').textContent=r.clip_id+' · '+labels[r.overlay_route];$('#video').src=r.video;$('#meta').replaceChildren();$('#origins').replaceChildren();$('#evidence').replaceChildren();
+$('#meta').append(el('p','叠加：'+r.overlay_present+' · 操作：'+r.action_present+' · 影响：'+r.overlay_impact),el('p','规则候选：'+(r.rule_labels.join(' / ')||'无')+' · 来源核查：'+r.origin_status));
+const raw=el('a','完整记录 JSON');raw.href=r.record;raw.target='_blank';raw.rel='noopener';$('#meta').append(raw);
+if(r.source_url){try{const u=new URL(r.source_url);if(['http:','https:'].includes(u.protocol)){const link=el('a',' · 原始来源');link.href=u.href;link.target='_blank';link.rel='noopener';$('#meta').append(link)}}catch{}}
+$('#origins').append(el('h3','OCR 候选来源'));for(const c of r.origins){const box=el('div',undefined,'panel');box.append(el('b',c.origin+' · '+c.timestamp_s.toFixed(2)+' s'),el('p',c.reason));if(c.image){const im=el('img',undefined,'evidence');im.src=c.image;im.alt='来源核查局部图';box.append(im)}$('#origins').append(box)}
+for(const p of r.passes){const details=el('details',undefined,'panel');details.append(el('summary',p.fps+' FPS 判断'),el('pre',JSON.stringify(p.result||{error:p.error},null,2)));$('#evidence').append(details)}
+for(const e of r.evidence){const box=el('div',undefined,'panel');const seek=el('button',e.fps+' FPS · '+e.timestamp_s.toFixed(2)+' 秒');seek.onclick=()=>{$('#video').currentTime=e.timestamp_s};const im=el('img',undefined,'evidence');im.src=e.image;im.alt='模型证据帧';box.append(seek,el('p',e.reason),im,el('small','叠加框 '+JSON.stringify(e.overlay_region)+'；操作框 '+JSON.stringify(e.critical_region)));$('#evidence').append(box)}
+$('#dialog').showModal();
+}
+$('#dialog').addEventListener('close',()=>{$('#video').pause();$('#video').removeAttribute('src');$('#video').load()});$('#close').onclick=()=>$('#dialog').close();
+for(const id of ['search','route','source','type','issue'])$('#'+id).addEventListener('input',()=>{page=0;draw()});
+$('#prev').onclick=()=>{page--;draw()};$('#next').onclick=()=>{page++;draw()};
+fetch('dataset.json',{cache:'no-store'}).then(r=>{if(!r.ok)throw Error(r.status);return r.json()}).then(db=>{rows=db.records;for(const [key,count] of Object.entries(db.summary.counts)){const d=el('div',undefined,'stat');d.append(el('b',String(count)),el('span',labels[key]||key));$('#counts').append(d)}select('#route',Object.keys(labels));select('#source',[...new Set(rows.map(r=>r.source_id))].sort());select('#type',[...new Set(rows.flatMap(r=>r.overlay_types))].sort());select('#issue',[...new Set(rows.map(r=>r.routing_reason))].sort());draw()}).catch(e=>{$('#status').textContent='数据加载失败：'+e.message});
+</script></html>
