@@ -1,0 +1,34 @@
+{
+  "historical_records_checked": 610,
+  "routing_differences": 0,
+  "counts": {
+    "review": 132,
+    "accept": 466,
+    "not_applicable": 12
+  },
+  "core_source_byte_identity": {
+    "contract_v3.py": true,
+    "contract_v4.py": true,
+    "region_gate.py": true,
+    "rules.py": true
+  },
+  "scope": "reaggregate historical records; no new model inference",
+  "assets_http_200": 11,
+  "video_range_206": true,
+  "full_ffmpeg_decode": true,
+  "javascript_syntax": "passed",
+  "browser_full_playback": "not_run",
+  "unit_tests": 22,
+  "unit_tests_status": "passed",
+  "cloud_real_prepare": {
+    "clips": 1,
+    "frames": 38,
+    "ocr_boxes": 107,
+    "ocr_status": "success"
+  },
+  "existing_model_content_hash_checked": true,
+  "huggingface_metadata_revision_checked": true,
+  "new_huggingface_full_download": "not_run",
+  "new_accelerator_inference": "not_run",
+  "validated_at": "2026-11-06T03:22:17.098473+00:00"
+}

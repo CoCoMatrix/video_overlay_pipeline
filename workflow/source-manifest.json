@@ -1,0 +1,27 @@
+{
+  "artifact_kind": "video_overlay_pipeline_source",
+  "version": "v4-ocr-region-r2-portable-1",
+  "sha256": {
+    "src/contract_v3.py": "fbafc9cc74fafd61f9dd46dc2f3af5ee4830b7fcad4352ec948f8179a6d456ab",
+    "src/contract_v4.py": "7abd0c37830d01a6a859ef486dc377bb09ab5efce5cd36139fe0313a227874f4",
+    "src/media_v3.py": "2b03146d8776726c4a419245dee273b9cded7cdf3cad403038b25b8bb5a98353",
+    "src/region_gate.py": "06f3bcebba903bacf5f45d7e8ae965aaa35f90a8d8656d0b00fb8f5a65ca1ff8",
+    "src/rules.py": "62ffbcd3e186744fb731eada07fedb21c158da1eeef5a6cb3b8b9b9990365a85",
+    "src/run_v3.py": "e7a0b7df7eb0e5e42aef8abd17047a07d80e16c73ae4a141fe45f652771f5e88",
+    "src/run_v4.py": "62856c5e9c6e5f908385b05ab31ecbd832ef1738eeecda274407595c736a1f51",
+    "scripts/measure_stage.py": "f238253328941687a05f8619ab81671bf2c3d201373824a60bd9efe4b981ab77",
+    "scripts/models.py": "cdadea9ff073a36f30a0f497957adab7f380c6e4f0575cd599205ef027a4ec70",
+    "scripts/ocr_multiscale.py": "df7f684de161757820ff1564af7f23451d88355357d9d9901125c23b990df964",
+    "scripts/prepare.py": "f5637a849ec638ab598be0cc791795e2c47fd69675b68e9f76651fe0e469a6ce",
+    "scripts/prepare_ocr_regions.py": "65e74bad767f2602f9c22768709b5ee6de3e27ab8da92659d7e518bb45031a77",
+    "scripts/report.py": "0ec9be1e995e30c37768f4e7d4e50289c107b1235ce3436cb0407c98a9afb684",
+    "scripts/run.sh": "3a9fa5cad812988ba8f65a57d10bbb6daa9f24be9c40ba4ff43f96271619a29e",
+    "scripts/run_dataset.py": "1bd932c2dfeff0497093d959e09ca92d5a15409796852a68a4bd7d2e99dfa71c",
+    "scripts/serve.py": "2eb05e6660db8267003727f4e83c0be4450ff9d02e4db314874d7c2c3fd0de39",
+    "configs/models.json": "7d1667dbb8402b2197fbf1e934f62f2b3c4d4145dcfc67f33858bcce179b8a1b",
+    "configs/region_rules.json": "6499a0e1953de65fd8c50e95185ad4b8189b1268ee29ff77b653751f28cef11b",
+    "configs/rubric_v3.txt": "17c252d0b0050d00ae7b27eb016b8f97eb9fdbd035cd9a820ef6770270d37e71",
+    "configs/rubric_v4.txt": "3c71e44b17c6322ffe3cb6ea00f645a5d9278f9cee4723419fc7bde60c9988af",
+    "web/index.html": "01a6e64534603af3e786554dd24b491c14a12d8a4207dc62068b177f805df533"
+  }
+}
