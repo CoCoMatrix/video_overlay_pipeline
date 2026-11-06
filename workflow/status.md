@@ -3,7 +3,8 @@
 阶段：人类操作视频的叠加质量标注／分流；交付可复用 owner 代码。robot contract、canonical、训练 adapter 为 not_applicable，本流程没有机器人 state/action 转换。
 
 Owner: https://github.com/CoCoMatrix/video_overlay_pipeline
-实现分支: feat/portable-overlay-workflow
+使用分支: main（默认 clone）
+实现来源: PR #1 / feat/portable-overlay-workflow
 模式: shadow_only，保留 v4 路由；不自动删除数据。
 
 ## 已完成证据

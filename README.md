@@ -39,8 +39,7 @@
 ```bash
 git clone https://github.com/CoCoMatrix/video_overlay_pipeline.git
 cd video_overlay_pipeline
-# 本次实现先提交在此分支；合入后可使用 main。
-git checkout feat/portable-overlay-workflow
+# 默认分支 main 已包含完整流程，无需切换功能分支。
 python3 -m venv --system-site-packages .venv-model
 .venv-model/bin/python -m pip install -r requirements.txt
 python3 -m venv .venv-ocr
